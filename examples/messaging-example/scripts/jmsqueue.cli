@@ -1,0 +1,4 @@
+/subsystem=messaging-activemq/server=default:read-children-names(child-type="jms-queue")
+
+jms-queue add --queue-address=mySampleQueue --entries=java:/jms/queue/mySampleQueue
+jms-topic add --queue-address=MyTopic --entries=java:/jms/topic/myTopic

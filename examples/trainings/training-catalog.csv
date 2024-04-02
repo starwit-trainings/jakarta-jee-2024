@@ -1,0 +1,3 @@
+category, title, duration in day, trainer,minparticipants,maxparticipants,online
+Java, JEE Training, 3, Max Musermann, 3, 10, true, 
+General IT, IT Grundlagen, 5, Max Musermann, 3, 10, false

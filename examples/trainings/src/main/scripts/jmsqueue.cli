@@ -1,0 +1,1 @@
+jms-queue add --queue-address=trainingQueue --entries=java:/jms/queue/trainingQueue
