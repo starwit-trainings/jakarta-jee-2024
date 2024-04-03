@@ -9,16 +9,26 @@ import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
-@MultipartConfig
+@WebServlet("/upload")
+@MultipartConfig(
+  fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+  maxFileSize = 1024 * 1024 * 10,      // 10 MB
+  maxRequestSize = 1024 * 1024 * 100   // 100 MB
+)
 public class TrainingsImportServlet extends HttpServlet {
     private static final String CONTENT_DISPOSITION_KEY = "content-disposition";
     private static final String FILE_NAME_KEY = "filename";
 
-    //TODO override doPost
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        readFile(req);    
+    }
 
     private void readFile(HttpServletRequest req) throws ServletException, IOException {
         System.out.println("Content Type: " + req.getContentType());
@@ -28,9 +38,7 @@ public class TrainingsImportServlet extends HttpServlet {
         // Read parts. Also can be read by directly calling req.getPart(fileName)
         for (Part part : req.getParts()) {
             System.out.println("File Name: " + getFileName(part));
-            //System.out.println("File Content: " + getTextFromPart(part));
-            //TODO add file content
-            System.out.println("File Content: " + "add file content");
+            System.out.println("File Content: " + getTextFromPart(part));
         }    
     }
 
@@ -49,9 +57,10 @@ public class TrainingsImportServlet extends HttpServlet {
         StringBuilder value = new StringBuilder();
         //skip first line
         String line = reader.readLine();
-        line = reader.readLine();
+
         while (line != null) {
             value.append(line + "\r\n ");
+            line = reader.readLine();
         }
         return value.toString();
     }
