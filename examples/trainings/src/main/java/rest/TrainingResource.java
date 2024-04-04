@@ -23,6 +23,7 @@ import jakarta.ws.rs.core.Response;
 public class TrainingResource {
     private final Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
+    @GET
     @Path("{id}")
     @Produces("application/json")
     public TrainingEntity find(@PathParam("id") Long id) {
