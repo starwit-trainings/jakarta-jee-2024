@@ -1,19 +1,35 @@
 package entities;
 
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class TrainingEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
     private String category;
 
     private String title;
 
+    @JsonbProperty("duration-in-days")
+    @Column(name = "duration_in_days", nullable = false)
     private int durationInDays;
 
     private String trainer;
 
+    @JsonbProperty("min-participants")
+    @Column(name = "min_participants")
     private Integer minParticipants;
     
+    @JsonbProperty("max-participants")
+    @Column(name = "max_participants")
     private Integer maxParticipants;
 
     public TrainingEntity() {
