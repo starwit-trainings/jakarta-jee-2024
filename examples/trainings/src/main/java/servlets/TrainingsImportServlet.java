@@ -3,8 +3,11 @@ package servlets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import dtos.TrainingDto;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -16,11 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
 @WebServlet("/upload")
-@MultipartConfig(
-  fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
-  maxFileSize = 1024 * 1024 * 10,      // 10 MB
-  maxRequestSize = 1024 * 1024 * 100   // 100 MB
-)
+@MultipartConfig
 public class TrainingsImportServlet extends HttpServlet {
     private static final String CONTENT_DISPOSITION_KEY = "content-disposition";
     private static final String FILE_NAME_KEY = "filename";
@@ -38,7 +37,7 @@ public class TrainingsImportServlet extends HttpServlet {
         // Read parts. Also can be read by directly calling req.getPart(fileName)
         for (Part part : req.getParts()) {
             System.out.println("File Name: " + getFileName(part));
-            System.out.println("File Content: " + getTextFromPart(part));
+            System.out.println("File Content: " + writeJson(part));
         }    
     }
 
@@ -72,18 +71,17 @@ public class TrainingsImportServlet extends HttpServlet {
         Pattern pattern = Pattern.compile(",");
         BufferedReader reader =
                 new BufferedReader(new InputStreamReader(part.getInputStream(), "UTF-8"));
-        //TODO create list of trainings
+        List<TrainingDto> trainings = new ArrayList<>();
         String line = reader.readLine();
         //skip first line
         line = reader.readLine();
         while (line != null) {
             String[] x = pattern.split(line);
-            //TODO add training to list
+            TrainingDto training = new TrainingDto(x[0], x[1], Integer.parseInt(x[2].trim()), x[3], Integer.parseInt(x[4].trim()), Integer.parseInt(x[5].trim()));
+            trainings.add(training);
             line = reader.readLine();
         }
-
-        //TODO jsonb.toJson(
-        return "missing";
+        return jsonb.toJson(trainings);
     }
 
     private String saveJson(Part part) throws IOException {
