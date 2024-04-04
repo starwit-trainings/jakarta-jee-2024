@@ -2,14 +2,23 @@ package services;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
+import entities.TrainingEntity;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
+@Stateless
 public class TrainingService implements Serializable {
 
     private static final Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    /*
+    @PersistenceContext
+    EntityManager em;
+
     public TrainingEntity create(TrainingEntity entity) {
         logger.info("Creating training " + entity.getTitle());
         em.persist(entity);
@@ -38,6 +47,4 @@ public class TrainingService implements Serializable {
         logger.info("Updating training " + entity.getTitle());
         return em.merge(entity);
     }
-     */
-    
 }
