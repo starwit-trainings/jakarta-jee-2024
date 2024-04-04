@@ -8,9 +8,12 @@ import java.util.logging.Logger;
 
 import entities.TrainingEntity;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Stateless
 public class TrainingService implements Serializable {
 
