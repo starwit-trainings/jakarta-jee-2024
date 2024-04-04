@@ -2,7 +2,11 @@ package rest;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import cdibeans.ApplicationScopedCounter;
+import cdibeans.RequestScopedCounter;
+import cdibeans.SessionScopedCounter;
 import entities.Hello;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -18,6 +22,15 @@ public class HelloWorldResource {
 	@ConfigProperty(name="default-name")
 	private String defaultName;
 
+	@Inject
+	private ApplicationScopedCounter applicationScopedCounter;
+
+	@Inject
+	private SessionScopedCounter sessionScopedCounter;
+
+	@Inject
+	private RequestScopedCounter requestScopedCounter;
+
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Hello hello(@QueryParam("name") String name) {
@@ -31,6 +44,12 @@ public class HelloWorldResource {
 	@GET
 	@Path("/count")
 	public String appCount() {
-		return "not implemented";
+		applicationScopedCounter.count();
+		sessionScopedCounter.count();
+		requestScopedCounter.count();
+		String result = "applicationScopedCounter: " + applicationScopedCounter.getCounter() + "\r\n";
+		result = result + "sessionScopedCounter: " + sessionScopedCounter.getCounter() + "\r\n";
+		result = result + "requestScopedCounter: " + requestScopedCounter.getCounter() + "\r\n";
+		return result;
 	}
 }
