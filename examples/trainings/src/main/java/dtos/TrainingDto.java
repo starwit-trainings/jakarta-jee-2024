@@ -1,5 +1,6 @@
 package dtos;
 
+import jakarta.json.bind.annotation.JsonbProperty;
 
 public class TrainingDto {
     
@@ -7,12 +8,15 @@ public class TrainingDto {
 
     private String title;
 
+    @JsonbProperty("duration-in-days")
     private int durationInDays;
 
     private String trainer;
 
+    @JsonbProperty("min-participants")
     private Integer minParticipants;
 
+    @JsonbProperty("max-participants")
     private Integer maxParticipants;
 
     public TrainingDto(String category, String title, int durationInDays, String trainer, Integer minParticipants,

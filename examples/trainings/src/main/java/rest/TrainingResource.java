@@ -1,6 +1,7 @@
 package rest;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,8 +18,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
-import services.TrainingService;
 
+@Path("trainings")
 public class TrainingResource {
     private final Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
@@ -32,11 +33,22 @@ public class TrainingResource {
     }
 
 
+    @GET
+    @Produces("application/json")
     public List<TrainingEntity> findAll() {
         logger.info("Getting all trainings");
-        return null;
+        List<TrainingEntity> trainingEntities = new ArrayList<>();
+        TrainingEntity trainingEntity = new TrainingEntity();
+        trainingEntity.setCategory("test");
+        trainingEntity.setDurationInDays(3);
+        trainingEntity.setTitle("test");
+        trainingEntities.add(trainingEntity);
+        return trainingEntities;
     }
 
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
     public TrainingEntity create(TrainingEntity TrainingEntity) {
         logger.info("Creating training " + TrainingEntity.getTitle());
         try{
@@ -49,7 +61,9 @@ public class TrainingResource {
     }
 
 
-    public void delete() {
+    @DELETE
+    @Path("{id}")
+    public void delete(@PathParam("id") Long id) {
         //logger.info("Deleting training by id " + id);
         try{
             //TODO
@@ -58,7 +72,9 @@ public class TrainingResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
-
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
     public TrainingEntity update(TrainingEntity TrainingEntity) {
         logger.info("Updating TrainingEntity " + TrainingEntity.getTitle());
         try{
