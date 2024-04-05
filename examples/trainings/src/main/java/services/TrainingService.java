@@ -12,6 +12,7 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 @Stateless
@@ -26,6 +27,25 @@ public class TrainingService implements Serializable {
         logger.info("Creating training " + entity.getTitle());
         em.persist(entity);
 
+        return entity;
+    }
+
+    public TrainingEntity updateByTitle(TrainingEntity entity) {
+        logger.info("Updating training with same title" + entity.getTitle());
+        TypedQuery<TrainingEntity> query = em.createQuery("SELECT c FROM TrainingEntity c WHERE c.title like :title", TrainingEntity.class);
+        query.setParameter("title", entity.getTitle());
+        List<TrainingEntity> trainings = query.getResultList();
+        if (trainings != null && !trainings.isEmpty()){
+            TrainingEntity fromDB = trainings.get(0);
+            fromDB.setCategory(entity.getCategory());
+            fromDB.setDurationInDays(entity.getDurationInDays());
+            fromDB.setMaxParticipants(entity.getMaxParticipants());
+            fromDB.setMinParticipants(entity.getMinParticipants());
+            fromDB.setTrainer(entity.getTrainer());
+            em.persist(fromDB);
+            return fromDB;
+        } 
+        em.persist(entity);
         return entity;
     }
 
