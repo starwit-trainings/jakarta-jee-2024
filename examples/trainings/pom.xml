@@ -92,6 +92,10 @@
 							</user>
 						</users>
 					</add-user>
+					<commands>
+						<command>/subsystem=messaging-activemq/server=default:read-children-names(child-type="jms-queue")</command>
+						<command>jms-queue add --queue-address=TrainingQueue --entries=java:/jms/queue/TrainingQueue</command>
+					</commands> 
 				</configuration>
 			</plugin>
 		</plugins>
