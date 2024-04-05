@@ -1,10 +1,16 @@
 package jms;
 
+import jakarta.ejb.ActivationConfigProperty;
+import jakarta.ejb.MessageDriven;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import jakarta.jms.TextMessage;
 
+@MessageDriven(activationConfig = {
+  @ActivationConfigProperty(propertyName = "destination", propertyValue = "java:/jms/queue/TrainingQueue"),
+  @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "jakarta.jms.Queue")
+})
 public class TrainingMessageListener implements MessageListener {
 
   public void onMessage(Message message) {
