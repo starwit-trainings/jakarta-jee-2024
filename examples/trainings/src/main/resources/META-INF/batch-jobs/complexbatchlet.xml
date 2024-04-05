@@ -1,0 +1,16 @@
+<job id="complexbatchlet" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	version="1.0">
+
+    <step id="step1">
+		<properties>
+			<property name="header" value="true" />
+            <property name="output_file" value="result.json" />
+		</properties>
+
+        <chunk item-count="3">
+            <reader ref="trainingReader" />
+            <processor ref="trainingProcessor" />
+            <writer ref="trainingWriter" />
+        </chunk>
+    </step>
+</job>
