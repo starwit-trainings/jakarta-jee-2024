@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import dtos.TrainingDto;
+import entities.TrainingEntity;
+import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -17,12 +19,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import services.TrainingService;
 
 @WebServlet("/upload")
 @MultipartConfig
 public class TrainingsImportServlet extends HttpServlet {
     private static final String CONTENT_DISPOSITION_KEY = "content-disposition";
     private static final String FILE_NAME_KEY = "filename";
+
+    @Inject
+    private TrainingService trainingService;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,7 +43,7 @@ public class TrainingsImportServlet extends HttpServlet {
         // Read parts. Also can be read by directly calling req.getPart(fileName)
         for (Part part : req.getParts()) {
             System.out.println("File Name: " + getFileName(part));
-            System.out.println("File Content: " + writeJson(part));
+            System.out.println("File Content: " + saveJson(part));
         }    
     }
 
@@ -91,16 +97,14 @@ public class TrainingsImportServlet extends HttpServlet {
         BufferedReader reader =
                 new BufferedReader(new InputStreamReader(part.getInputStream(), "UTF-8"));
         String line = reader.readLine();
-        //skip first line
         line = reader.readLine();
         while (line != null) {
             String[] x = pattern.split(line);
-            //TODO create and save training
-            //TODO return all trainings from database
+            TrainingEntity training = new TrainingEntity(x[0], x[1], Integer.parseInt(x[2].trim()), x[3], Integer.parseInt(x[4].trim()), Integer.parseInt(x[5].trim()));
+            trainingService.create(training);
             line = reader.readLine();
         }
-        //TODO jsonb.toJson(
-        return "missing";
+        return jsonb.toJson(trainingService.findAll());
     }
 
 }

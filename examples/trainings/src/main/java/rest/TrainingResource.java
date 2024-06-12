@@ -18,19 +18,22 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
+import services.TrainingService;
 
 @Path("trainings")
 public class TrainingResource {
     private final Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
+
+    @Inject
+    TrainingService trainingService;
 
     @GET
     @Path("{id}")
     @Produces("application/json")
     public TrainingEntity find(@PathParam("id") Long id) {
         logger.info("Getting training by id " + id);
-        return null;
-        // TODO trainingService.findById(id)
-            //.orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
+        return trainingService.findById(id)
+            .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
     }
 
 
@@ -38,13 +41,7 @@ public class TrainingResource {
     @Produces("application/json")
     public List<TrainingEntity> findAll() {
         logger.info("Getting all trainings");
-        List<TrainingEntity> trainingEntities = new ArrayList<>();
-        TrainingEntity trainingEntity = new TrainingEntity();
-        trainingEntity.setCategory("test");
-        trainingEntity.setDurationInDays(3);
-        trainingEntity.setTitle("test");
-        trainingEntities.add(trainingEntity);
-        return trainingEntities;
+        return trainingService.findAll();
     }
 
     @PUT
@@ -53,8 +50,7 @@ public class TrainingResource {
     public TrainingEntity create(TrainingEntity TrainingEntity) {
         logger.info("Creating training " + TrainingEntity.getTitle());
         try{
-            //TODO
-            return null;
+            return trainingService.create(TrainingEntity);
         }catch (PersistenceException ex){
             logger.info("Error creating training " + TrainingEntity.getTitle());
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -65,11 +61,11 @@ public class TrainingResource {
     @DELETE
     @Path("{id}")
     public void delete(@PathParam("id") Long id) {
-        //logger.info("Deleting training by id " + id);
+        logger.info("Deleting training by id " + id);
         try{
-            //TODO
+            trainingService.delete(id);
         }catch (IllegalArgumentException e){
-            //logger.info("Error deleting TrainingEntity by id " + id);
+            logger.info("Error deleting TrainingEntity by id " + id);
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
@@ -79,8 +75,7 @@ public class TrainingResource {
     public TrainingEntity update(TrainingEntity TrainingEntity) {
         logger.info("Updating TrainingEntity " + TrainingEntity.getTitle());
         try{
-            //TODO
-            return null;
+            return trainingService.update(TrainingEntity);
         }catch (PersistenceException ex){
             logger.info("Error updating TrainingEntity " + TrainingEntity.getTitle());
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
